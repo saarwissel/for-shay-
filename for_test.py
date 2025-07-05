@@ -1,473 +1,203 @@
+#num1
+img = cv2.imread('assets/logo.jpg', 1)
+img = cv2.resize(img, (0, 0), fx=0.5, fy=0.5)
+img = cv2.rotate(img, cv2.cv2.ROTATE_90_CLOCKWISE)
 
-#sec1/1
-#pylint:disable=no-member
+cv2.imwrite('new_img.jpg', img)
 
-import cv2 as cv
+cv2.imshow('Image', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
-# Read in an image
-img = cv.imread('../Resources/Photos/park.jpg')
-cv.imshow('Park', img)
 
-# Converting to grayscale
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
 
-# Blur 
-blur = cv.GaussianBlur(img, (7,7), cv.BORDER_DEFAULT)
-cv.imshow('Blur', blur)
+import cv2
+import random
 
-# Edge Cascade
-canny = cv.Canny(blur, 125, 175)
-cv.imshow('Canny Edges', canny)
+img = cv2.imread('assets/logo.jpg', -1)
 
-# Dilating the image
-dilated = cv.dilate(canny, (7,7), iterations=3)
-cv.imshow('Dilated', dilated)
+# Change first 100 rows to random pixels
+#נעבור על כל הפיקסלים ונשנה לרנדמלי. דרך לייצר רעש בתמונה
+for i in range(100):
+	for j in range(img.shape[1]):
+		img[i][j] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
 
-# Eroding
-eroded = cv.erode(dilated, (7,7), iterations=3)
-cv.imshow('Eroded', eroded)
+# Copy part of image
+#העתקה והדבקה מקטע של התמונה
+tag = img[500:700, 600:900]
+img[100:300, 650:950] = tag
 
-# Resize
-resized = cv.resize(img, (500,500), interpolation=cv.INTER_CUBIC)
-cv.imshow('Resized', resized)
+cv2.imshow('Image', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
-# Cropping
-cropped = img[50:200, 200:400]
-cv.imshow('Cropped', cropped)
 
-#1/2
-#pylint:disable=no-member
 
-import cv2 as cv
 import numpy as np
-
-img = cv.imread('../Resources/Photos/cats.jpg')
-cv.imshow('Cats', img)
-
-blank = np.zeros(img.shape, dtype='uint8')
-cv.imshow('Blank', blank)
-
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
-
-blur = cv.GaussianBlur(gray, (5,5), cv.BORDER_DEFAULT)
-cv.imshow('Blur', blur)
-
-canny = cv.Canny(blur, 125, 175)
-cv.imshow('Canny Edges', canny)
-
-# ret, thresh = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
-# cv.imshow('Thresh', thresh)
-
-contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
-print(f'{len(contours)} contour(s) found!')
-
-cv.drawContours(blank, contours, -1, (0,0,255), 1)
-cv.imshow('Contours Drawn', blank)
-
-cv.waitKey(0)
-
-
-#1/3
-#pylint:disable=no-member
-
-import cv2 as cv
-import numpy as np
-
-blank = np.zeros((500,500,3), dtype='uint8')
-cv.imshow('Blank', blank)
-
-# 1. Paint the image a certain colour
-blank[200:300, 300:400] = 0,0,255
-cv.imshow('Green', blank)
-
-# 2. Draw a Rectangle
-cv.rectangle(blank, (0,0), (blank.shape[1]//2, blank.shape[0]//2), (0,255,0), thickness=-1)
-cv.imshow('Rectangle', blank)
-
-# 3. Draw A circle
-cv.circle(blank, (blank.shape[1]//2, blank.shape[0]//2), 40, (0,0,255), thickness=-1)
-cv.imshow('Circle', blank)
-
-# 4. Draw a line
-cv.line(blank, (100,250), (300,400), (255,255,255), thickness=3)
-cv.imshow('Line', blank)
-
-# 5. Write text
-cv.putText(blank, 'Hello, my name is Jason!!!', (0,225), cv.FONT_HERSHEY_TRIPLEX, 1.0, (0,255,0), 2)
-cv.imshow('Text', blank)
-
-cv.waitKey(0)
-
-#1/4
-#pylint:disable=no-member
-
-import cv2 as cv
-
-img = cv.imread('../Resources/Photos/cats.jpg')
-cv.imshow('Cats', img)
-
-cv.waitKey(0)
-
-# Reading Videos
-capture = cv.VideoCapture('../Resources/Videos/dog.mp4')
-
-while True:
-    isTrue, frame = capture.read()
-    
-    # if cv.waitKey(20) & 0xFF==ord('d'):
-    # This is the preferred way - if `isTrue` is false (the frame could 
-    # not be read, or we're at the end of the video), we immediately
-    # break from the loop. 
-    if isTrue:    
-        cv.imshow('Video', frame)
-        if cv.waitKey(20) & 0xFF==ord('d'):
-            break            
-    else:
-        break
-
-capture.release()
-cv.destroyAllWindows()
-
-# 1/5
-#pylint:disable=no-member
-
-import cv2 as cv
-
-img = cv.imread('../Resources/Photos/cats.jpg')
-cv.imshow('Cats', img)
-
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
-
-# Simple Thresholding
-threshold, thresh = cv.threshold(gray, 150, 255, cv.THRESH_BINARY )
-cv.imshow('Simple Thresholded', thresh)
-
-threshold, thresh_inv = cv.threshold(gray, 150, 255, cv.THRESH_BINARY_INV )
-cv.imshow('Simple Thresholded Inverse', thresh_inv)
-
-# Adaptive Thresholding
-adaptive_thresh = cv.adaptiveThreshold(gray, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 11, 9)
-cv.imshow('Adaptive Thresholding', adaptive_thresh)
-
-cv.waitKey(0)
-
-# 1/6
-#pylint:disable=no-member
-
-import cv2 as cv
-import numpy as np
-
-img = cv.imread('../Resources/Photos/park.jpg')
-cv.imshow('Park', img)
-
-# Translation
-def translate(img, x, y):
-    transMat = np.float32([[1,0,x],[0,1,y]])
-    dimensions = (img.shape[1], img.shape[0])
-    return cv.warpAffine(img, transMat, dimensions)
-
-# -x --> Left
-# -y --> Up
-# x --> Right
-# y --> Down
-
-translated = translate(img, -100, 100)
-cv.imshow('Translated', translated)
-
-# Rotation
-def rotate(img, angle, rotPoint=None):
-    (height,width) = img.shape[:2]
-
-    if rotPoint is None:
-        rotPoint = (width//2,height//2)
-    
-    rotMat = cv.getRotationMatrix2D(rotPoint, angle, 1.0)
-    dimensions = (width,height)
-
-    return cv.warpAffine(img, rotMat, dimensions)
-
-rotated = rotate(img, -45)
-cv.imshow('Rotated', rotated)
-
-rotated_rotated = rotate(img, -90)
-cv.imshow('Rotated Rotated', rotated_rotated)
-
-# Resizing
-resized = cv.resize(img, (500,500), interpolation=cv.INTER_CUBIC)
-cv.imshow('Resized', resized)
-
-# Flipping
-flip = cv.flip(img, -1)
-cv.imshow('Flip', flip)
-
-# Cropping
-cropped = img[200:400, 300:400]
-cv.imshow('Cropped', cropped)
-
-
-cv.waitKey(0)
-
-# 2/1
-#pylint:disable=no-member
-
-import cv2 as cv
-import numpy as np
-
-blank = np.zeros((400,400), dtype='uint8')
-
-rectangle = cv.rectangle(blank.copy(), (30,30), (370,370), 255, -1)
-circle = cv.circle(blank.copy(), (200,200), 200, 255, -1)
-
-cv.imshow('Rectangle', rectangle)
-cv.imshow('Circle', circle)
-
-# bitwise AND --> intersecting regions
-bitwise_and = cv.bitwise_and(rectangle, circle)
-cv.imshow('Bitwise AND', bitwise_and)
-
-# bitwise OR --> non-intersecting and intersecting regions
-bitwise_or = cv.bitwise_or(rectangle, circle)
-cv.imshow('Bitwise OR', bitwise_or)
-
-# bitwise XOR --> non-intersecting regions
-bitwise_xor = cv.bitwise_xor(rectangle, circle)
-cv.imshow('Bitwise XOR', bitwise_xor)
-
-# bitwise NOT
-bitwise_not = cv.bitwise_not(circle)
-cv.imshow('Circle NOT', bitwise_not)
-
-cv.waitKey(0)
-
-# 2/2
-#pylint:disable=no-member
-
-import cv2 as cv
-
-img = cv.imread('../Resources/Photos/cats.jpg')
-cv.imshow('Cats', img)
-
-# Averaging
-average = cv.blur(img, (3,3))
-cv.imshow('Average Blur', average)
-
-# Gaussian Blur
-gauss = cv.GaussianBlur(img, (3,3), 0)
-cv.imshow('Gaussian Blur', gauss)
-
-# Median Blur
-median = cv.medianBlur(img, 3)
-cv.imshow('Median Blur', median)
-
-# Bilateral
-bilateral = cv.bilateralFilter(img, 10, 35, 25)
-cv.imshow('Bilateral', bilateral)
-
-cv.waitKey(0)
-# 2/3
-#pylint:disable=no-member
-
-import cv2 as cv
 import matplotlib.pyplot as plt
+import imageio.v2 as imageio
+import pandas as pd
+import scipy.cluster.hierarchy as sch
 
-img = cv.imread('../Resources/Photos/park.jpg')
-cv.imshow('Park', img)
+# === קריאת תמונה והמרה לגווני אפור ===
+# קרא תמונה והפוך אותה לגווני אפור
+img = imageio.imread('your_image.jpg')  # ← החלף בשם קובץ התמונה שלך
+if img.ndim == 3:
+    img = img.mean(axis=2).astype(np.uint8)
 
-# plt.imshow(img)
-# plt.show()
+# הצג את התמונה המקורית
+plt.figure()
+plt.title("Original Image")
+plt.imshow(img, cmap='gray')
+plt.axis('off')
 
-# BGR to Grayscale
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
+# === בינאריזציה לפי סף ===
+def binary_segmentation(im, threshold=128):
+    # מחזירה תמונה בשחור-לבן לפי ערך סף
+    return (im > threshold).astype(np.uint8) * 255
 
-# BGR to HSV
-hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-cv.imshow('HSV', hsv)
+bin_img = binary_segmentation(img)
 
-# BGR to L*a*b
-lab = cv.cvtColor(img, cv.COLOR_BGR2LAB)
-cv.imshow('LAB', lab)
+# הצגת תמונה בינארית
+plt.figure()
+plt.title("Binary Segmentation")
+plt.imshow(bin_img, cmap='gray')
+plt.axis('off')
 
-# BGR to RGB
-rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-cv.imshow('RGB', rgb)
+# === כיווץ עמודות לפי ממוצע (Squeeze) ===
+def squeeze_image(im, factor):
+    # כל factor עמודות ממוצעות לעמודה אחת
+    new_n = im.shape[0]
+    new_m = im.shape[1] // factor
+    new_img = np.zeros((new_n, new_m))
+    for j in range(new_m):
+        cols = im[:, j*factor:(j+1)*factor]
+        new_img[:, j] = cols.mean(axis=1)
+    return new_img.astype(np.uint8)
 
-# HSV to BGR
-lab_bgr = cv.cvtColor(lab, cv.COLOR_LAB2BGR)
-cv.imshow('LAB --> BGR', lab_bgr)
+squeezed = squeeze_image(img, 4)
 
-cv.waitKey(0)
-# 2/4
-#pylint:disable=no-member
+# הצגת תמונה מכווצת
+plt.figure()
+plt.title("Squeezed Image")
+plt.imshow(squeezed, cmap='gray')
+plt.axis('off')
 
-import cv2 as cv
-import numpy as np
+# === Morphology: פעולות על שכנות של פיקסל ===
+def get_neighborhood(im, x, y, dx=1, dy=1):
+    # מחזירה את הסביבה של פיקסל במרחק dx,dy
+    x1 = max(x - dx, 0)
+    x2 = min(x + dx + 1, im.shape[1])
+    y1 = max(y - dy, 0)
+    y2 = min(y + dy + 1, im.shape[0])
+    return im[y1:y2, x1:x2]
 
-img = cv.imread('../Resources/Photos/park.jpg')
-cv.imshow('Park', img)
+def morph_by_neighborhood(im, operator, dx=1, dy=1):
+    # מחילה פונקציה על כל סביבה בתמונה
+    new_im = np.zeros_like(im)
+    for y in range(im.shape[0]):
+        for x in range(im.shape[1]):
+            nbr = get_neighborhood(im, x, y, dx, dy)
+            new_im[y, x] = operator(nbr)
+    return new_im.astype(np.uint8)
 
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
+# דילול (Erosion) = מינימום
+erosion = morph_by_neighborhood(bin_img, np.min)
+plt.figure()
+plt.title("Erosion")
+plt.imshow(erosion, cmap='gray')
+plt.axis('off')
 
-# Laplacian
-lap = cv.Laplacian(gray, cv.CV_64F)
-lap = np.uint8(np.absolute(lap))
-cv.imshow('Laplacian', lap)
+# הרחבה (Dilation) = מקסימום
+dilation = morph_by_neighborhood(bin_img, np.max)
+plt.figure()
+plt.title("Dilation")
+plt.imshow(dilation, cmap='gray')
+plt.axis('off')
 
-# Sobel 
-sobelx = cv.Sobel(gray, cv.CV_64F, 1, 0)
-sobely = cv.Sobel(gray, cv.CV_64F, 0, 1)
-combined_sobel = cv.bitwise_or(sobelx, sobely)
+# === ניקוי רעש עם ממוצע וחציון ===
+def denoise_mean(im, dx=1, dy=1):
+    # מנקה רעש לפי ממוצע של סביבה
+    return morph_by_neighborhood(im, lambda x: np.mean(x), dx, dy)
 
-cv.imshow('Sobel X', sobelx)
-cv.imshow('Sobel Y', sobely)
-cv.imshow('Combined Sobel', combined_sobel)
-
-canny = cv.Canny(gray, 150, 175)
-cv.imshow('Canny', canny)
-cv.waitKey(0)
-
-# 2/5
-#pylint:disable=no-member
-
-import cv2 as cv
-import matplotlib.pyplot as plt
-import numpy as np
-
-img = cv.imread('../Resources/Photos/cats.jpg')
-cv.imshow('Cats', img)
-
-blank = np.zeros(img.shape[:2], dtype='uint8')
-
-# gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-# cv.imshow('Gray', gray)
-
-mask = cv.circle(blank, (img.shape[1]//2,img.shape[0]//2), 100, 255, -1)
-
-masked = cv.bitwise_and(img,img,mask=mask)
-cv.imshow('Mask', masked)
-
-# GRayscale histogram
-# gray_hist = cv.calcHist([gray], [0], mask, [256], [0,256] )
-
-# plt.figure()
-# plt.title('Grayscale Histogram')
-# plt.xlabel('Bins')
-# plt.ylabel('# of pixels')
-# plt.plot(gray_hist)
-# plt.xlim([0,256])
-# plt.show()
-
-# Colour Histogram
+def denoise_median(im, dx=1, dy=1):
+    # מנקה רעש לפי חציון של סביבה
+    return morph_by_neighborhood(im, lambda x: np.median(x), dx, dy)
 
 plt.figure()
-plt.title('Colour Histogram')
-plt.xlabel('Bins')
-plt.ylabel('# of pixels')
-colors = ('b', 'g', 'r')
-for i,col in enumerate(colors):
-    hist = cv.calcHist([img], [i], mask, [256], [0,256])
-    plt.plot(hist, color=col)
-    plt.xlim([0,256])
+plt.title("Mean Denoised")
+plt.imshow(denoise_mean(img), cmap='gray')
+plt.axis('off')
 
+plt.figure()
+plt.title("Median Denoised")
+plt.imshow(denoise_median(img), cmap='gray')
+plt.axis('off')
+
+# === גרדיאנט – הפרש בין פיקסל למי שמעליו ===
+def image_gradient(im):
+    zero_row = np.zeros((1, im.shape[1]), dtype=np.int32)
+    up_shifted = np.vstack((im[1:], zero_row))
+    diff = np.abs(np.int32(up_shifted) - np.int32(im))
+    return diff.astype(np.uint8)
+
+gradient = image_gradient(img)
+plt.figure()
+plt.title("Gradient (Vertical)")
+plt.imshow(gradient, cmap='gray')
+plt.axis('off')
+
+# הגברת הגרדיאנט
+brightened = np.minimum(gradient * 5, 255).astype(np.uint8)
+plt.figure()
+plt.title("Brightened Gradient")
+plt.imshow(brightened, cmap='gray')
+plt.axis('off')
+
+# === חלק 2: ניתוח טבלאות ציונים (Lecture 13) ===
+
+# יצירת DataFrame לדוגמה
+grades_df = pd.DataFrame({
+    'Student': ['Yael', 'Nadav', 'Michal', 'Shoshana', 'Danielle',
+                'Omer', 'Yarden', 'Avi', 'Roy', 'Tal'],
+    'Math': [94, 65, 58, 80, 90, 85, 92, 55, 92, 88],
+    'History': [95, 70, 60, 78, 90, 81, 87, 53, 90, 86],
+    'Biology': [60, 92, 45, 89, 93, 91, 54, 48, 91, 58]
+})
+
+students = grades_df['Student'].values
+grades = grades_df.drop(columns='Student').values
+
+# כמה נכשלות יש
+print("Total Fails:", np.sum(grades < 60))
+
+# נכשלות לכל סטודנט
+print("Fails per student:")
+for i, name in enumerate(students):
+    count = np.sum(grades[:, i] < 60) if grades.shape[1] > i else 0
+    print(f"{name}: {count}")
+
+# Boxplot
+plt.figure()
+plt.boxplot(grades, labels=grades_df.columns[1:])
+plt.title("Grades Boxplot")
+plt.ylabel("Grade")
 plt.show()
 
-cv.waitKey(0)
+# Heatmap
+plt.figure()
+plt.imshow(grades, cmap='hot', aspect='auto')
+plt.title("Grades Heatmap")
+plt.colorbar()
+plt.yticks(ticks=range(len(students)), labels=students)
+plt.xticks(ticks=range(grades.shape[1]), labels=grades_df.columns[1:])
+plt.tight_layout()
+plt.show()
 
-# 2/6
-#pylint:disable=no-member
+# Dendrogram (clustering)
+Z = sch.linkage(grades.T, method='ward')
+plt.figure()
+sch.dendrogram(Z, labels=grades_df.columns[1:])
+plt.title("Dendrogram (Courses)")
+plt.show()
 
-import cv2 as cv
-import numpy as np
-
-img = cv.imread('../Resources/Photos/cats 2.jpg')
-cv.imshow('Cats', img)
-
-blank = np.zeros(img.shape[:2], dtype='uint8')
-cv.imshow('Blank Image', blank)
-
-circle = cv.circle(blank.copy(), (img.shape[1]//2 + 45,img.shape[0]//2), 100, 255, -1)
-
-rectangle = cv.rectangle(blank.copy(), (30,30), (370,370), 255, -1)
-
-weird_shape = cv.bitwise_and(circle,rectangle)
-cv.imshow('Weird Shape', weird_shape)
-
-masked = cv.bitwise_and(img,img,mask=weird_shape)
-cv.imshow('Weird Shaped Masked Image', masked)
-
-cv.waitKey(0)
-
-# 2/7
-#pylint:disable=no-member
-
-import cv2 as cv
-
-# img = cv.imread('../Resources/Photos/cat.jpg')
-# cv.imshow('Cat', img)
-
-def rescaleFrame(frame, scale=0.75):
-    # Images, Videos and Live Video
-    width = int(frame.shape[1] * scale)
-    height = int(frame.shape[0] * scale)
-
-    dimensions = (width,height)
-
-    return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
-
-def changeRes(width,height):
-    # Live video
-    capture.set(3,width)
-    capture.set(4,height)
-    
-# Reading Videos
-capture = cv.VideoCapture('../Resources/Videos/dog.mp4')
-
-while True:
-    isTrue, frame = capture.read()
-
-    frame_resized = rescaleFrame(frame, scale=.2)
-    
-    cv.imshow('Video', frame)
-    cv.imshow('Video Resized', frame_resized)
-
-    if cv.waitKey(20) & 0xFF==ord('d'):
-        break
-
-capture.release()
-cv.destroyAllWindows()
-
-# 2/8
-#pylint:disable=no-member
-
-import cv2 as cv
-import numpy as np
-
-img = cv.imread('../Resources/Photos/park.jpg')
-cv.imshow('Park', img)
-
-blank = np.zeros(img.shape[:2], dtype='uint8')
-
-b,g,r = cv.split(img)
-
-blue = cv.merge([b,blank,blank])
-green = cv.merge([blank,g,blank])
-red = cv.merge([blank,blank,r])
-
-
-cv.imshow('Blue', blue)
-cv.imshow('Green', green)
-cv.imshow('Red', red)
-
-print(img.shape)
-print(b.shape)
-print(g.shape)
-print(r.shape)
-
-merged = cv.merge([b,g,r])
-cv.imshow('Merged Image', merged)
-
-cv.waitKey(0)
